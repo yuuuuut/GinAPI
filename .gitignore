@@ -1,0 +1,5 @@
+/docker/db/.env
+/docker/db/data
+
+/api/tmp
+/api/.env
