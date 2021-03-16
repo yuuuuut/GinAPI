@@ -1,12 +1,11 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/yuuuuut/gin-api/src/config"
+	"github.com/yuuuuut/gin-api/src/db"
+	"github.com/yuuuuut/gin-api/src/router"
 )
 
 func main() {
-	fmt.Println("OK")
-	config.DB()
+	db.DB()
+	router.Init()
 }
