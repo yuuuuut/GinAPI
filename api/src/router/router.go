@@ -17,6 +17,8 @@ func router() *gin.Engine {
 	{
 		ctrl := todo.Controller{}
 		todos.GET("", ctrl.Index)
+		todos.GET("/:id", ctrl.Show)
+		todos.POST("", ctrl.Create)
 	}
 
 	return r
