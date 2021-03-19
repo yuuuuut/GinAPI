@@ -3,3 +3,4 @@
 
 /api/tmp
 /api/.env
+/api/credentials.json
