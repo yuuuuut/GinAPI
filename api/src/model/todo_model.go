@@ -47,3 +47,20 @@ func (m Model) CreateM(c *gin.Context) (Todo, map[string]string, error) {
 
 	return todo, nil, nil
 }
+
+func (m Model) UpdateM(id string, c *gin.Context) (Todo, error) {
+	db := util.GetDB()
+	var todo Todo
+
+	if err := db.Where("id = ?", id).First(&todo).Error; err != nil {
+		return todo, err
+	}
+
+	todo.Status = true
+
+	if err := db.Save(&todo).Error; err != nil {
+		return todo, err
+	}
+
+	return todo, nil
+}

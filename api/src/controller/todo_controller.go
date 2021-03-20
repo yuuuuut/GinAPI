@@ -21,7 +21,6 @@ func (pc Controller) Index(c *gin.Context) {
 
 func (pc Controller) Show(c *gin.Context) {
 	var m todo.Model
-
 	id := c.Param("id")
 
 	todo, err := m.Get(id)
@@ -45,5 +44,18 @@ func (pc Controller) Create(c *gin.Context) {
 		return
 	} else {
 		c.JSON(201, gin.H{"todo": todo})
+	}
+}
+
+func (pc Controller) Update(c *gin.Context) {
+	var m todo.Model
+	id := c.Param("id")
+
+	todo, err := m.UpdateM(id, c)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	} else {
+		c.JSON(200, gin.H{"todo": todo})
 	}
 }

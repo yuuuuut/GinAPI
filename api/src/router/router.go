@@ -20,6 +20,7 @@ func router() *gin.Engine {
 		todos.GET("", middleware.FirebaseAuth, ctrl.Index)
 		todos.GET("/:id", ctrl.Show)
 		todos.POST("", ctrl.Create)
+		todos.PUT("/:id", ctrl.Update)
 	}
 
 	return r
