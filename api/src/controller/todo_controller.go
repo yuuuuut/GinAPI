@@ -36,7 +36,7 @@ func (pc Controller) Show(c *gin.Context) {
 func (pc Controller) Create(c *gin.Context) {
 	var m todo.Model
 
-	todo, err, errorMessages := m.CreateM(c)
+	todo, errorMessages, err := m.CreateM(c)
 	if errorMessages != nil {
 		c.JSON(400, gin.H{"errorMessages": errorMessages})
 		return
