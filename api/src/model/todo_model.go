@@ -21,7 +21,7 @@ func (m Model) GetAll() ([]Todo, error) {
 	return todos, nil
 }
 
-func (m Model) Get(id string) (Todo, error) {
+func (m Model) GetById(id string) (Todo, error) {
 	db := util.GetDB()
 	var todo Todo
 
@@ -48,7 +48,7 @@ func (m Model) CreateM(c *gin.Context) (Todo, map[string]string, error) {
 	return todo, nil, nil
 }
 
-func (m Model) UpdateM(id string, c *gin.Context) (Todo, error) {
+func (m Model) UpdateById(id string, c *gin.Context) (Todo, error) {
 	db := util.GetDB()
 	var todo Todo
 
@@ -59,6 +59,17 @@ func (m Model) UpdateM(id string, c *gin.Context) (Todo, error) {
 	todo.Status = true
 
 	if err := db.Save(&todo).Error; err != nil {
+		return todo, err
+	}
+
+	return todo, nil
+}
+
+func (m Model) DeleteById(id string) (Todo, error) {
+	db := util.GetDB()
+	var todo Todo
+
+	if err := db.Where("id = ?", id).Delete(&todo).Error; err != nil {
 		return todo, err
 	}
 

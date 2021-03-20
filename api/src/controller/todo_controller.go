@@ -23,7 +23,7 @@ func (pc Controller) Show(c *gin.Context) {
 	var m todo.Model
 	id := c.Param("id")
 
-	todo, err := m.Get(id)
+	todo, err := m.GetById(id)
 	if err != nil {
 		c.JSON(404, gin.H{"error": err.Error()})
 		return
@@ -51,11 +51,24 @@ func (pc Controller) Update(c *gin.Context) {
 	var m todo.Model
 	id := c.Param("id")
 
-	todo, err := m.UpdateM(id, c)
+	todo, err := m.UpdateById(id, c)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	} else {
 		c.JSON(200, gin.H{"todo": todo})
+	}
+}
+
+func (pc Controller) Delete(c *gin.Context) {
+	var m todo.Model
+	id := c.Param("id")
+
+	todo, err := m.DeleteById(id)
+	if err != nil {
+		c.JSON(403, gin.H{"error": err.Error()})
+		return
+	} else {
+		c.JSON(204, gin.H{"todo": todo})
 	}
 }

@@ -21,6 +21,7 @@ func router() *gin.Engine {
 		todos.GET("/:id", ctrl.Show)
 		todos.POST("", ctrl.Create)
 		todos.PUT("/:id", ctrl.Update)
+		todos.DELETE("/:id", ctrl.Delete)
 	}
 
 	return r
