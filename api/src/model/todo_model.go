@@ -10,11 +10,11 @@ type Model struct{}
 
 type Todo entity.Todo
 
-func (m Model) GetAll() ([]Todo, error) {
+func (m Model) GetAll(offset, limit string) ([]Todo, error) {
 	db := util.GetDB()
 	var todos []Todo
 
-	if err := db.Find(&todos).Error; err != nil {
+	if err := db.Offset(offset).Limit(limit).Find(&todos).Error; err != nil {
 		return nil, err
 	}
 

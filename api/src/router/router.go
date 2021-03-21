@@ -7,11 +7,11 @@ import (
 )
 
 func Init() {
-	r := router()
+	r := Router()
 	r.Run()
 }
 
-func router() *gin.Engine {
+func Router() *gin.Engine {
 	r := gin.Default()
 
 	todos := r.Group("/todos")

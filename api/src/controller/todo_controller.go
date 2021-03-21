@@ -2,6 +2,7 @@ package todo
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/yuuuuut/gin-api/src/helper"
 	"github.com/yuuuuut/gin-api/src/model"
 )
 
@@ -9,7 +10,11 @@ type Controller struct{}
 
 func (pc Controller) Index(c *gin.Context) {
 	var m todo.Model
-	todos, err := m.GetAll()
+
+	offset := helper.GetQueryIndex(c, "offset")
+	limit := helper.GetQueryIndex(c, "limit")
+
+	todos, err := m.GetAll(offset, limit)
 
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
