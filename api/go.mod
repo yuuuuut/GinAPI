@@ -11,6 +11,7 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/joho/godotenv v1.3.0
 	github.com/stretchr/testify v1.4.0
+	go.uber.org/zap v1.16.0
 	google.golang.org/api v0.17.0
 	gopkg.in/bluesuncorp/validator.v5 v5.10.3 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect

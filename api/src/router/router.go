@@ -14,6 +14,8 @@ func Init() {
 func Router() *gin.Engine {
 	r := gin.Default()
 
+	r.Use(middleware.Loging)
+
 	todos := r.Group("/todos")
 	{
 		ctrl := todo.Controller{}
