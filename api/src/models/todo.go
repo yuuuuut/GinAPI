@@ -1,17 +1,15 @@
-package todo
+package models
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/yuuuuut/gin-api/src/entity"
+	"github.com/yuuuuut/gin-api/src/entities"
 	"github.com/yuuuuut/gin-api/src/util"
 )
 
-type Model struct{}
+type Todo entities.Todo
 
-type Todo entity.Todo
-
-func (m Model) GetAll(offset, limit string) ([]Todo, error) {
-	db := util.GetDB()
+func (m Todo) GetAll(offset, limit string) ([]Todo, error) {
+	var db = util.GetDB()
 	var todos []Todo
 
 	if err := db.Offset(offset).Limit(limit).Find(&todos).Error; err != nil {
@@ -21,8 +19,8 @@ func (m Model) GetAll(offset, limit string) ([]Todo, error) {
 	return todos, nil
 }
 
-func (m Model) GetById(id string) (Todo, error) {
-	db := util.GetDB()
+func (m Todo) GetById(id string) (Todo, error) {
+	var db = util.GetDB()
 	var todo Todo
 
 	if err := db.Where("id = ?", id).First(&todo).Error; err != nil {
@@ -32,8 +30,8 @@ func (m Model) GetById(id string) (Todo, error) {
 	return todo, nil
 }
 
-func (m Model) CreateM(c *gin.Context) (Todo, map[string]string, error) {
-	db := util.GetDB()
+func (m Todo) CreateM(c *gin.Context) (Todo, map[string]string, error) {
+	var db = util.GetDB()
 	var todo Todo
 
 	if err := c.BindJSON(&todo); err != nil {
@@ -48,8 +46,8 @@ func (m Model) CreateM(c *gin.Context) (Todo, map[string]string, error) {
 	return todo, nil, nil
 }
 
-func (m Model) UpdateById(id string, c *gin.Context) (Todo, error) {
-	db := util.GetDB()
+func (m Todo) UpdateById(id string, c *gin.Context) (Todo, error) {
+	var db = util.GetDB()
 	var todo Todo
 
 	if err := db.Where("id = ?", id).First(&todo).Error; err != nil {
@@ -65,8 +63,8 @@ func (m Model) UpdateById(id string, c *gin.Context) (Todo, error) {
 	return todo, nil
 }
 
-func (m Model) DeleteById(id string) (Todo, error) {
-	db := util.GetDB()
+func (m Todo) DeleteById(id string) (Todo, error) {
+	var db = util.GetDB()
 	var todo Todo
 
 	if err := db.Where("id = ?", id).Delete(&todo).Error; err != nil {

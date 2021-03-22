@@ -1,20 +1,21 @@
-package todo
+package controllers
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/yuuuuut/gin-api/src/helper"
-	"github.com/yuuuuut/gin-api/src/model"
+	"github.com/yuuuuut/gin-api/src/models"
 )
 
-type Controller struct{}
+type TodoController struct{}
 
-func (pc Controller) Index(c *gin.Context) {
-	var m todo.Model
+var todoModel = new(models.Todo)
 
+func (cr TodoController) Index(c *gin.Context) {
 	offset := helper.GetQueryIndex(c, "offset")
 	limit := helper.GetQueryIndex(c, "limit")
 
-	todos, err := m.GetAll(offset, limit)
+	todos, err := todoModel.GetAll(offset, limit)
 
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
@@ -24,11 +25,10 @@ func (pc Controller) Index(c *gin.Context) {
 	}
 }
 
-func (pc Controller) Show(c *gin.Context) {
-	var m todo.Model
+func (cr TodoController) Show(c *gin.Context) {
 	id := c.Param("id")
 
-	todo, err := m.GetById(id)
+	todo, err := todoModel.GetById(id)
 	if err != nil {
 		c.JSON(404, gin.H{"error": err.Error()})
 		return
@@ -37,10 +37,8 @@ func (pc Controller) Show(c *gin.Context) {
 	}
 }
 
-func (pc Controller) Create(c *gin.Context) {
-	var m todo.Model
-
-	todo, errorMessages, err := m.CreateM(c)
+func (cr TodoController) Create(c *gin.Context) {
+	todo, errorMessages, err := todoModel.CreateM(c)
 	if errorMessages != nil {
 		c.JSON(400, gin.H{"errorMessages": errorMessages})
 		return
@@ -52,11 +50,10 @@ func (pc Controller) Create(c *gin.Context) {
 	}
 }
 
-func (pc Controller) Update(c *gin.Context) {
-	var m todo.Model
+func (cr TodoController) Update(c *gin.Context) {
 	id := c.Param("id")
 
-	todo, err := m.UpdateById(id, c)
+	todo, err := todoModel.UpdateById(id, c)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -65,11 +62,10 @@ func (pc Controller) Update(c *gin.Context) {
 	}
 }
 
-func (pc Controller) Delete(c *gin.Context) {
-	var m todo.Model
+func (cr TodoController) Delete(c *gin.Context) {
 	id := c.Param("id")
 
-	todo, err := m.DeleteById(id)
+	todo, err := todoModel.DeleteById(id)
 	if err != nil {
 		c.JSON(403, gin.H{"error": err.Error()})
 		return

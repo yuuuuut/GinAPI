@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	todo "github.com/yuuuuut/gin-api/src/controller"
+	"github.com/yuuuuut/gin-api/src/controllers"
 	"github.com/yuuuuut/gin-api/src/middleware"
 )
 
@@ -18,7 +18,7 @@ func Router() *gin.Engine {
 
 	todos := r.Group("/todos")
 	{
-		ctrl := todo.Controller{}
+		ctrl := new(controllers.TodoController)
 		todos.GET("", middleware.FirebaseAuth, ctrl.Index)
 		todos.GET("/:id", ctrl.Show)
 		todos.POST("", ctrl.Create)

@@ -8,7 +8,8 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/joho/godotenv"
-	"github.com/yuuuuut/gin-api/src/entity"
+
+	"github.com/yuuuuut/gin-api/src/entities"
 )
 
 var db *gorm.DB
@@ -38,7 +39,7 @@ func DB() {
 }
 
 func InitMigration() {
-	db.AutoMigrate(&entity.Todo{})
+	db.AutoMigrate(&entities.Todo{})
 }
 
 func GetDB() *gorm.DB {
