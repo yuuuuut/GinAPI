@@ -7,5 +7,8 @@ import (
 
 func main() {
 	util.DB()
+
+	util.InitMigration()
+
 	router.Init()
 }

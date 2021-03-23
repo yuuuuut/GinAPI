@@ -39,7 +39,12 @@ func DB() {
 }
 
 func InitMigration() {
-	db.AutoMigrate(&entities.Todo{})
+	db.AutoMigrate(&entities.User{})
+	db.AutoMigrate(&entities.Todo{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+}
+
+func DropTables() {
+	db.DropTable(entities.User{}, entities.Todo{})
 }
 
 func GetDB() *gorm.DB {
