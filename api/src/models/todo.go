@@ -7,7 +7,6 @@ import (
 )
 
 type Todo entities.Todo
-type User entities.User
 
 func (m Todo) GetAll(offset, limit string) ([]Todo, error) {
 	var db = util.GetDB()

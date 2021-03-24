@@ -40,7 +40,7 @@ func DB() {
 
 func InitCreateTables() {
 	db.CreateTable(&entities.User{})
-	db.CreateTable(&entities.Todo{}).AddForeignKey("user_id", "users(uid)", "CASCADE", "CASCADE")
+	db.CreateTable(&entities.Todo{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 }
 
 func DropTables() {

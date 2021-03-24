@@ -26,5 +26,11 @@ func Router() *gin.Engine {
 		todos.DELETE("/:id", ctrl.Delete)
 	}
 
+	users := r.Group("/users")
+	{
+		ctrl := new(controllers.UserController)
+		users.GET("/:id", ctrl.Show)
+	}
+
 	return r
 }
