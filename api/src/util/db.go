@@ -38,9 +38,9 @@ func DB() {
 	fmt.Println("DB Connect OK !")
 }
 
-func InitMigration() {
-	db.AutoMigrate(&entities.User{})
-	db.AutoMigrate(&entities.Todo{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+func InitCreateTables() {
+	db.CreateTable(&entities.User{})
+	db.CreateTable(&entities.Todo{}).AddForeignKey("user_id", "users(uid)", "CASCADE", "CASCADE")
 }
 
 func DropTables() {

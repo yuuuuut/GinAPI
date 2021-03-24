@@ -16,6 +16,11 @@ func TodoValidation(err error) (result map[string]string) {
 				case "required":
 					result["Title"] = "Titleを入力してください。"
 				}
+			case "UserID":
+				switch errors[i].Tag() {
+				case "required":
+					result["UserId"] = "ログインが必要です。"
+				}
 			}
 		}
 	}

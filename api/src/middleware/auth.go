@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 
 	//"strings"
 
@@ -46,7 +45,6 @@ func FirebaseAuth(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(decoded)
-
+	c.Set("currentUserId", decoded.UID)
 	c.Next()
 }

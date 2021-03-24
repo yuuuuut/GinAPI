@@ -7,6 +7,7 @@ import (
 )
 
 type Todo entities.Todo
+type User entities.User
 
 func (m Todo) GetAll(offset, limit string) ([]Todo, error) {
 	var db = util.GetDB()
@@ -31,14 +32,24 @@ func (m Todo) GetById(id string) (Todo, error) {
 }
 
 func (m Todo) CreateM(c *gin.Context) (Todo, map[string]string, error) {
-	var db = util.GetDB()
-	var todo Todo
+	var (
+		db   = util.GetDB()
+		user User
+		req  Todo
+	)
 
-	if err := c.BindJSON(&todo); err != nil {
+	userId := c.GetString("currentUserId")
+
+	if err := c.BindJSON(&req); err != nil {
 		errorMessages := util.TodoValidation(err)
-		return todo, errorMessages, err
+		return req, errorMessages, err
 	}
 
+	if err := db.Where("uid = ?", userId).First(&user).Error; err != nil {
+		return req, nil, err
+	}
+
+	todo := Todo{Title: req.Title, UserID: userId, User: entities.User(user)}
 	if err := db.Create(&todo).Error; err != nil {
 		return todo, nil, err
 	}
