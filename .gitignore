@@ -1,6 +1,9 @@
 /docker/db/.env
 /docker/db/data
 
+/docker/testdb/.env
+/docker/testdb/data
+
 /api/tmp
 /api/.env
 /api/credentials.json

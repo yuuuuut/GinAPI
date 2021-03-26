@@ -44,7 +44,7 @@ func (m Todo) CreateM(c *gin.Context) (Todo, map[string]string, error) {
 		return req, errorMessages, err
 	}
 
-	if err := db.Where("uid = ?", userId).First(&user).Error; err != nil {
+	if err := db.Where("id = ?", userId).First(&user).Error; err != nil {
 		return req, nil, err
 	}
 

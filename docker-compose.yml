@@ -25,3 +25,15 @@ services:
       - "3305:3306"
     security_opt:
       - seccomp:unconfined
+
+  test-db:
+    image: mysql:8.0
+    env_file:
+      - ./docker/testdb/.env
+    volumes:
+      - ./docker/testdb/data:/var/lib/mysql
+      - ./docker/testdb/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - "3307:3306"
+    security_opt:
+      - seccomp:unconfined

@@ -6,9 +6,8 @@ import (
 )
 
 func main() {
-	util.DB()
-
-	//util.InitCreateTables()
+	//util.InitDB()
+	util.InitTestDB()
 
 	router.Init()
 }
