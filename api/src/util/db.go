@@ -6,19 +6,14 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/joho/godotenv"
 
 	"github.com/yuuuuut/gin-api/src/entities"
 )
 
 var DB *gorm.DB
 
+// InitDB は MainDatabaseと接続して*gorm.DBを返します。
 func InitDB() *gorm.DB {
-	err := godotenv.Load(".env")
-	if err != nil {
-		panic("Error Loading .env File")
-	}
-
 	DBMS := "mysql"
 	USER := os.Getenv("USER")
 	PASS := os.Getenv("PASS")
@@ -38,12 +33,8 @@ func InitDB() *gorm.DB {
 	return db
 }
 
+// InitTestDB は TestDatabaseと接続して*gorm.DBを返します。
 func InitTestDB() *gorm.DB {
-	err := godotenv.Load(".env")
-	if err != nil {
-		panic("Error Loading .env File")
-	}
-
 	DBMS := "mysql"
 	USER := os.Getenv("USER")
 	PASS := os.Getenv("PASS")
@@ -63,15 +54,18 @@ func InitTestDB() *gorm.DB {
 	return db
 }
 
+// InitCreateTables は与えられたDBにTableを作成します。
 func InitCreateTables(db *gorm.DB) {
 	db.CreateTable(&entities.User{})
 	db.CreateTable(&entities.Todo{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 }
 
+// DropTables は与えられたDBのTableを削除します。
 func DropTables(db *gorm.DB) {
 	db.DropTable(entities.User{}, entities.Todo{})
 }
 
+// GetDB は*gorm.DBを返します。
 func GetDB() *gorm.DB {
 	return DB
 }

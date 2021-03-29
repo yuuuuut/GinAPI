@@ -19,7 +19,7 @@ func Router() *gin.Engine {
 	todos := r.Group("/todos")
 	{
 		ctrl := new(controllers.TodoController)
-		todos.GET("", ctrl.Index)
+		todos.GET("", middleware.FirebaseAuth, ctrl.Index)
 		todos.GET("/:id", ctrl.Show)
 		todos.POST("", middleware.FirebaseAuth, ctrl.Create)
 		todos.PUT("/:id", ctrl.Update)

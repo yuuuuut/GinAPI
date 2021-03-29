@@ -11,12 +11,7 @@ import (
 
 // FirebaseAuth Middleware は送られてきたTokenが有効なTokenかチェックします
 func FirebaseAuth(c *gin.Context) {
-	auth, err := util.SetupFirebase()
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
-		c.Abort()
-		return
-	}
+	auth := util.GetFirebase()
 
 	token, err := util.GetVerifyIDToken(auth)
 	if err != nil {

@@ -1,4 +1,4 @@
-package main
+package test
 
 import (
 	"bytes"
@@ -31,7 +31,9 @@ type TodoPost struct {
 }
 
 func TestMain(m *testing.M) {
+	util.InitTestENV()
 	util.InitTestDB()
+	util.InitTestFirebase()
 
 	code := m.Run()
 
@@ -63,7 +65,7 @@ func TestTodoIndex(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	fmt.Println(req)
+	fmt.Println(w)
 
 	assert.Equal(t, 200, w.Code)
 }

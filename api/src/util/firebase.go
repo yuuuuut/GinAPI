@@ -10,7 +10,6 @@ import (
 
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
-	"github.com/joho/godotenv"
 	"google.golang.org/api/option"
 )
 
@@ -25,25 +24,46 @@ type ResponseBody struct {
 	IdToken string
 }
 
-// SetupFirebase はFirebaseAdminのAuthClientを返します。
-func SetupFirebase() (*auth.Client, error) {
-	if err := godotenv.Load(".env"); err != nil {
-		return nil, err
-	}
+//
+var firebaseAuth *auth.Client
 
+// GetFirebase は*auth.Clientを返します。
+func GetFirebase() *auth.Client {
+	return firebaseAuth
+}
+
+// InitFirebase はFirebaseAdminと接続します。
+func InitFirebase() {
 	opt := option.WithCredentialsFile(os.Getenv("FIREBASE_ADMIN_SDK_FILENAME"))
 
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
-		return nil, err
+		panic(err.Error())
 	}
 
 	auth, err := app.Auth(context.Background())
 	if err != nil {
-		return nil, err
+		panic(err.Error())
 	}
 
-	return auth, nil
+	firebaseAuth = auth
+}
+
+// InitTestFirebase は InitFirebaseのTest用。
+func InitTestFirebase() {
+	opt := option.WithCredentialsFile(os.Getenv("FIREBASE_ADMIN_SDK_TEST_PATH"))
+
+	app, err := firebase.NewApp(context.Background(), nil, opt)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	auth, err := app.Auth(context.Background())
+	if err != nil {
+		panic(err.Error())
+	}
+
+	firebaseAuth = auth
 }
 
 // GetVerifyIDToken は 使用可能のTokenを返します。
