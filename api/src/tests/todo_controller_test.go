@@ -1,4 +1,4 @@
-package test
+package tests
 
 import (
 	"bytes"
@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strconv"
 
 	"strings"
 	"testing"
@@ -19,6 +20,8 @@ import (
 	"github.com/yuuuuut/gin-api/src/router"
 	"github.com/yuuuuut/gin-api/src/util"
 )
+
+type Todo entities.Todo
 
 type TodoPost struct {
 	Todo struct {
@@ -55,6 +58,9 @@ func UnmarshalData(body *bytes.Buffer) TodoPost {
 }
 
 func TestTodoIndex(t *testing.T) {
+	var db = util.GetDB()
+	todo := CreateTodo()
+
 	r := router.Router()
 
 	req, err := http.NewRequest("GET", "/todos", nil)
@@ -65,22 +71,45 @@ func TestTodoIndex(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	fmt.Println(w)
+	assert.Equal(t, 200, w.Code)
+
+	var todos []Todo
+	db.Find(&todos)
+
+	assert.Equal(t, len(todos), 1)
+
+	DeleteData(todo.UserID)
+}
+
+func TestTodoShow(t *testing.T) {
+	todo := CreateTodo()
+
+	r := router.Router()
+
+	req, err := http.NewRequest("GET", "/todos/"+strconv.Itoa(todo.ID), nil)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)
+
+	DeleteData(todo.UserID)
 }
 
 func TestTodoPost(t *testing.T) {
+	user := CreateUser()
+
 	r := router.Router()
 
 	title := "Test"
-
 	expectedTodo := entities.Todo{
 		Title: title,
 	}
 
 	body := strings.NewReader(fmt.Sprintf(`{"title": "%s"}`, title))
-
 	req, err := http.NewRequest("POST", "/todos", body)
 	if err != nil {
 		log.Println(err.Error())
@@ -91,8 +120,8 @@ func TestTodoPost(t *testing.T) {
 
 	resData := UnmarshalData(w.Body)
 
-	fmt.Println(resData)
-
 	assert.Equal(t, 201, w.Code)
 	assert.Equal(t, resData.Todo.Title, expectedTodo.Title)
+
+	DeleteData(user.ID)
 }
