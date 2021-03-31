@@ -12,7 +12,7 @@ func (m Todo) GetAll(offset, limit string) ([]Todo, error) {
 	var db = util.GetDB()
 	var todos []Todo
 
-	if err := db.Offset(offset).Limit(limit).Find(&todos).Error; err != nil {
+	if err := db.Offset(offset).Limit(limit).Preload("User").Find(&todos).Error; err != nil {
 		return nil, err
 	}
 

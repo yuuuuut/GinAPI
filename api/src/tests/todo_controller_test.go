@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -43,26 +42,8 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func UnmarshalData(body *bytes.Buffer) TodoPost {
-	b, err := ioutil.ReadAll(body)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var todo TodoPost
-	if err := json.Unmarshal(b, &todo); err != nil {
-		log.Fatal(err)
-	}
-
-	return todo
-}
-
 func TestTodoIndex(t *testing.T) {
-	var db = util.GetDB()
-	todo := CreateTodo()
-
 	r := router.Router()
-
 	req, err := http.NewRequest("GET", "/todos", nil)
 	if err != nil {
 		log.Println(err.Error())
@@ -72,17 +53,11 @@ func TestTodoIndex(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)
-
-	var todos []Todo
-	db.Find(&todos)
-
-	assert.Equal(t, len(todos), 1)
-
-	DeleteData(todo.UserID)
 }
 
 func TestTodoShow(t *testing.T) {
-	todo := CreateTodo()
+	user := CreateUser()
+	todo := CreateTodo(user.ID)
 
 	r := router.Router()
 
@@ -96,7 +71,7 @@ func TestTodoShow(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 
-	DeleteData(todo.UserID)
+	DeleteData(user.ID)
 }
 
 func TestTodoPost(t *testing.T) {
@@ -118,10 +93,67 @@ func TestTodoPost(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	resData := UnmarshalData(w.Body)
+	b, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var resData TodoPost
+	if err := json.Unmarshal(b, &resData); err != nil {
+		log.Fatal(err)
+	}
 
 	assert.Equal(t, 201, w.Code)
 	assert.Equal(t, resData.Todo.Title, expectedTodo.Title)
+
+	DeleteData(user.ID)
+}
+
+func TestTodoUpdate(t *testing.T) {
+	user := CreateUser()
+	todo := CreateTodo(user.ID)
+
+	r := router.Router()
+
+	req, err := http.NewRequest("PUT", "/todos/"+strconv.Itoa(todo.ID), nil)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	b, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var resData TodoPost
+	if err := json.Unmarshal(b, &resData); err != nil {
+		log.Fatal(err)
+	}
+
+	assert.Equal(t, 200, w.Code)
+	assert.Equal(t, resData.Todo.Status, true)
+
+	DeleteData(user.ID)
+}
+
+func TestTodoDelete(t *testing.T) {
+	user := CreateUser()
+	todo := CreateTodo(user.ID)
+
+	r := router.Router()
+
+	req, err := http.NewRequest("DELETE", "/todos/"+strconv.Itoa(todo.ID), nil)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	assert.Equal(t, 204, w.Code)
 
 	DeleteData(user.ID)
 }

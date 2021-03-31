@@ -20,12 +20,10 @@ func CreateUser() entities.User {
 	return user
 }
 
-func CreateTodo() entities.Todo {
+func CreateTodo(userId string) entities.Todo {
 	var db = util.GetDB()
 
-	user := CreateUser()
-
-	todo := entities.Todo{Title: "TestTodo", UserID: user.ID}
+	todo := entities.Todo{Title: "TestTodo", UserID: userId}
 	if err := db.Create(&todo).Error; err != nil {
 		panic(err.Error())
 	}

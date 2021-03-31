@@ -2,8 +2,6 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-
-	"github.com/yuuuuut/gin-api/src/helper"
 	"github.com/yuuuuut/gin-api/src/models"
 )
 
@@ -12,8 +10,19 @@ type TodoController struct{}
 var todoModel = new(models.Todo)
 
 func (cr TodoController) Index(c *gin.Context) {
-	offset := helper.GetQueryIndex(c, "offset")
-	limit := helper.GetQueryIndex(c, "limit")
+	var (
+		offset, limit         string
+		offsetBool, limitBool bool
+	)
+
+	offset, offsetBool = c.GetQuery("offset")
+	if !offsetBool {
+		offset = "0"
+	}
+	limit, limitBool = c.GetQuery("limit")
+	if !limitBool {
+		limit = "3"
+	}
 
 	todos, err := todoModel.GetAll(offset, limit)
 
