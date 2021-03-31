@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"log"
 	"os"
 
 	"github.com/yuuuuut/gin-api/src/entities"
@@ -21,9 +22,16 @@ func CreateUser() entities.User {
 }
 
 func CreateTodo(userId string) entities.Todo {
-	var db = util.GetDB()
+	var (
+		db   = util.GetDB()
+		user entities.User
+	)
 
-	todo := entities.Todo{Title: "TestTodo", UserID: userId}
+	if err := db.Where("id = ?", userId).First(&user).Error; err != nil {
+		log.Fatal(err.Error())
+	}
+
+	todo := entities.Todo{Title: "TestTodo", UserID: userId, User: entities.User(user)}
 	if err := db.Create(&todo).Error; err != nil {
 		panic(err.Error())
 	}

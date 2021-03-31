@@ -23,7 +23,7 @@ func (m Todo) GetById(id string) (Todo, error) {
 	var db = util.GetDB()
 	var todo Todo
 
-	if err := db.Where("id = ?", id).First(&todo).Error; err != nil {
+	if err := db.First(&todo, id).Related(&todo.User).Error; err != nil {
 		return todo, err
 	}
 

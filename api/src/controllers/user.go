@@ -20,3 +20,13 @@ func (cr UserController) Show(c *gin.Context) {
 		c.JSON(200, gin.H{"user": user})
 	}
 }
+
+func (cr UserController) Create(c *gin.Context) {
+	user, err := userModel.CreateM(c)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	} else {
+		c.JSON(201, gin.H{"user": user})
+	}
+}

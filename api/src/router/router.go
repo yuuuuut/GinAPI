@@ -30,6 +30,7 @@ func Router() *gin.Engine {
 	{
 		ctrl := new(controllers.UserController)
 		users.GET("/:id", ctrl.Show)
+		users.POST("", ctrl.Create)
 	}
 
 	return r
