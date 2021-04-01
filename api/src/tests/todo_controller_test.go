@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strconv"
 
 	"strings"
@@ -17,7 +16,6 @@ import (
 
 	"github.com/yuuuuut/gin-api/src/entities"
 	"github.com/yuuuuut/gin-api/src/router"
-	"github.com/yuuuuut/gin-api/src/util"
 )
 
 type Todo entities.Todo
@@ -34,16 +32,6 @@ type OneTodo struct {
 		UserID string
 		User   entities.User
 	}
-}
-
-func TestMain(m *testing.M) {
-	util.InitTestENV()
-	util.InitTestDB()
-	util.InitTestFirebase()
-
-	code := m.Run()
-
-	os.Exit(code)
 }
 
 func TestTodoIndex(t *testing.T) {

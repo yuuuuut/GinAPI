@@ -15,12 +15,28 @@ import (
 	"github.com/yuuuuut/gin-api/src/router"
 )
 
-type OneUser struct {
+type UserShow struct {
 	User struct {
 		ID          string
 		DisplayName string
 		PohotURL    string
 		Todos       []Todo
+	}
+}
+
+type UserCreate struct {
+	User struct {
+		ID          string
+		DisplayName string
+		PohotURL    string
+		Todos       []Todo
+	}
+	Profile struct {
+		ID       int
+		Nickname string
+		Sex      string
+		Age      int
+		UserID   string
 	}
 }
 
@@ -43,7 +59,7 @@ func TestUserShow(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	var resData OneUser
+	var resData UserShow
 	if err := json.Unmarshal(reqBody, &resData); err != nil {
 		log.Fatal(err)
 	}
@@ -72,11 +88,12 @@ func TestUserCreate(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	var resData OneUser
+	var resData UserCreate
 	if err := json.Unmarshal(b, &resData); err != nil {
 		log.Fatal(err)
 	}
 
 	assert.Equal(t, 201, w.Code)
 	assert.Equal(t, resData.User.ID, uid)
+	assert.Equal(t, resData.Profile.UserID, uid)
 }

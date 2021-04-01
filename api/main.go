@@ -8,6 +8,8 @@ import (
 func main() {
 	util.InitENV()
 	util.InitDB()
+
+	//util.InitCreateTables(db)
 	util.InitFirebase()
 
 	router.Init()

@@ -7,7 +7,10 @@ import (
 
 type UserController struct{}
 
-var userModel = new(models.User)
+var (
+	userModel    = new(models.User)
+	profileModel = new(models.Profile)
+)
 
 func (cr UserController) Show(c *gin.Context) {
 	id := c.Param("id")
@@ -22,11 +25,16 @@ func (cr UserController) Show(c *gin.Context) {
 }
 
 func (cr UserController) Create(c *gin.Context) {
-	user, err := userModel.CreateM(c)
-	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+	user, userErr := userModel.CreateM(c)
+	profile, profileErr := profileModel.CreateM(c, user.ID)
+
+	if userErr != nil {
+		c.JSON(400, gin.H{"error": userErr.Error()})
+		return
+	} else if profileErr != nil {
+		c.JSON(400, gin.H{"error": profileErr.Error()})
 		return
 	} else {
-		c.JSON(201, gin.H{"user": user})
+		c.JSON(201, gin.H{"user": user, "profile": profile})
 	}
 }
