@@ -37,8 +37,8 @@ type OneTodo struct {
 func TestTodoIndex(t *testing.T) {
 	user := CreateUser()
 	todo := CreateTodo(user.ID)
-	defer DeleteData(todo.ID)
-	defer DeleteData(user.ID)
+	defer DeleteData(todo, todo.ID)
+	defer DeleteData(user, user.ID)
 
 	r := router.Router()
 	req, err := http.NewRequest("GET", "/todos", nil)
@@ -67,8 +67,8 @@ func TestTodoIndex(t *testing.T) {
 func TestTodoShow(t *testing.T) {
 	user := CreateUser()
 	todo := CreateTodo(user.ID)
-	defer DeleteData(todo.ID)
-	defer DeleteData(user.ID)
+	defer DeleteData(todo, todo.ID)
+	defer DeleteData(user, user.ID)
 
 	r := router.Router()
 	req, err := http.NewRequest("GET", "/todos/"+strconv.Itoa(todo.ID), nil)
@@ -96,7 +96,7 @@ func TestTodoShow(t *testing.T) {
 
 func TestTodoPost(t *testing.T) {
 	user := CreateUser()
-	defer DeleteData(user.ID)
+	defer DeleteData(user, user.ID)
 
 	title := "Test"
 
@@ -128,8 +128,8 @@ func TestTodoPost(t *testing.T) {
 func TestTodoUpdate(t *testing.T) {
 	user := CreateUser()
 	todo := CreateTodo(user.ID)
-	defer DeleteData(todo.ID)
-	defer DeleteData(user.ID)
+	defer DeleteData(todo, todo.ID)
+	defer DeleteData(user, user.ID)
 
 	r := router.Router()
 	req, err := http.NewRequest("PUT", "/todos/"+strconv.Itoa(todo.ID), nil)
@@ -156,8 +156,8 @@ func TestTodoUpdate(t *testing.T) {
 func TestTodoDelete(t *testing.T) {
 	user := CreateUser()
 	todo := CreateTodo(user.ID)
-	defer DeleteData(todo.ID)
-	defer DeleteData(user.ID)
+	defer DeleteData(todo, todo.ID)
+	defer DeleteData(user, user.ID)
 
 	r := router.Router()
 	req, err := http.NewRequest("DELETE", "/todos/"+strconv.Itoa(todo.ID), nil)

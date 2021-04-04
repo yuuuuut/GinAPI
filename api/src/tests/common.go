@@ -21,6 +21,17 @@ func CreateUser() entities.User {
 	return user
 }
 
+func CreateProfile(userId string) entities.Profile {
+	var db = util.GetDB()
+
+	profile := entities.Profile{UserID: userId}
+	if err := db.Create(&profile).Error; err != nil {
+		panic(err.Error())
+	}
+
+	return profile
+}
+
 func CreateTodo(userId string) entities.Todo {
 	var (
 		db   = util.GetDB()
@@ -39,16 +50,20 @@ func CreateTodo(userId string) entities.Todo {
 	return todo
 }
 
-func DeleteData(id interface{}) {
+func DeleteData(t interface{}, id interface{}) {
 	var db = util.GetDB()
 
-	switch id.(type) {
-	case int:
+	switch t.(type) {
+	case entities.Todo:
 		if err := db.Where("id = ?", id).Delete(entities.Todo{}).Error; err != nil {
 			panic(err.Error())
 		}
-	case string:
+	case entities.User:
 		if err := db.Where("id = ?", id).Delete(entities.User{}).Error; err != nil {
+			panic(err.Error())
+		}
+	case entities.Profile:
+		if err := db.Where("id = ?", id).Delete(entities.Profile{}).Error; err != nil {
 			panic(err.Error())
 		}
 	}

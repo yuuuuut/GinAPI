@@ -8,8 +8,7 @@ import (
 type UserController struct{}
 
 var (
-	userModel    = new(models.User)
-	profileModel = new(models.Profile)
+	userModel = new(models.User)
 )
 
 func (cr UserController) Show(c *gin.Context) {

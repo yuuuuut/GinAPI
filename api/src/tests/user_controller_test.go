@@ -12,8 +12,11 @@ import (
 	"testing"
 
 	"github.com/go-playground/assert/v2"
+	"github.com/yuuuuut/gin-api/src/entities"
 	"github.com/yuuuuut/gin-api/src/router"
 )
+
+type User entities.User
 
 type UserShow struct {
 	User struct {
@@ -43,8 +46,8 @@ type UserCreate struct {
 func TestUserShow(t *testing.T) {
 	user := CreateUser()
 	todo := CreateTodo(user.ID)
-	defer DeleteData(todo.ID)
-	defer DeleteData(user.ID)
+	defer DeleteData(todo, todo.ID)
+	defer DeleteData(user, user.ID)
 
 	r := router.Router()
 	req, err := http.NewRequest("GET", "/users/"+user.ID, nil)
@@ -73,7 +76,7 @@ func TestUserCreate(t *testing.T) {
 	r := router.Router()
 	uid := os.Getenv("FIREBASE_ADMIN_USER_UID")
 
-	defer DeleteData(uid)
+	defer DeleteData(entities.User{}, uid)
 
 	reqBody := strings.NewReader(fmt.Sprintf(`{"ID": "%s","DisplayName":"TestUser","PohotURL":"TestPhoto"}`, uid))
 	req, err := http.NewRequest("POST", "/users", reqBody)
