@@ -8,6 +8,8 @@ import (
 
 type Todo entities.Todo
 
+type CreateTodoReq entities.CreateTodoReq
+
 func (m Todo) GetAll(offset, limit string) ([]Todo, error) {
 	var db = util.GetDB()
 	var todos []Todo
@@ -34,21 +36,26 @@ func (m Todo) CreateM(c *gin.Context) (Todo, map[string]string, error) {
 	var (
 		db   = util.GetDB()
 		user User
-		req  Todo
+		req  CreateTodoReq
+		tags []entities.Tag
 	)
 
 	userId := c.GetString("currentUserId")
 
 	if err := c.BindJSON(&req); err != nil {
 		errorMessages := util.TodoValidation(err)
-		return req, errorMessages, err
+		return Todo{}, errorMessages, err
 	}
 
 	if err := db.Where("id = ?", userId).First(&user).Error; err != nil {
-		return req, nil, err
+		return Todo{}, nil, err
 	}
 
-	todo := Todo{Title: req.Title, UserID: userId, User: entities.User(user)}
+	if err := db.Where("id IN (?)", req.Tags).Find(&tags).Error; err != nil {
+		return Todo{}, nil, err
+	}
+
+	todo := Todo{Title: req.Title, UserID: userId, User: entities.User(user), Tags: tags}
 	if err := db.Create(&todo).Error; err != nil {
 		return todo, nil, err
 	}

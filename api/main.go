@@ -7,9 +7,10 @@ import (
 
 func main() {
 	util.InitENV()
-	util.InitDB()
+	db := util.InitTestDB()
+	//util.InitDB()
 
-	//util.InitCreateTables(db)
+	util.InitCreateTables(db)
 	util.InitFirebase()
 
 	router.Init()

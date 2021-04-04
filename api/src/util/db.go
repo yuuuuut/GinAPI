@@ -57,14 +57,18 @@ func InitTestDB() *gorm.DB {
 //5zhGJih8aUYB7eNF0CLHXFIwygK2
 // InitCreateTables は与えられたDBにTableを作成します。
 func InitCreateTables(db *gorm.DB) {
+
 	db.CreateTable(&entities.User{})
 	db.CreateTable(&entities.Profile{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 	db.CreateTable(&entities.Todo{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+	db.CreateTable(&entities.Tag{}).AddForeignKey("parent_id", "tags(id)", "CASCADE", "CASCADE")
+	db.Table("todos_tags").AddForeignKey("todo_id", "todos(id)", "CASCADE", "CASCADE")
+	db.Table("todos_tags").AddForeignKey("tag_id", "tags(id)", "CASCADE", "CASCADE")
 }
 
 // DropTables は与えられたDBのTableを削除します。
 func DropTables(db *gorm.DB) {
-	db.DropTable(entities.User{}, entities.Profile{}, entities.Todo{})
+	db.DropTable(entities.User{}, entities.Profile{}, entities.Todo{}, &entities.Tag{})
 }
 
 // GetDB は*gorm.DBを返します。
