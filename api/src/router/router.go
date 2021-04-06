@@ -39,5 +39,11 @@ func Router() *gin.Engine {
 		profiles.GET("/:id", middleware.FirebaseAuth, ctrl.Show)
 	}
 
+	tags := r.Group("/tags")
+	{
+		ctrl := new(controllers.TagController)
+		tags.POST("", ctrl.Create)
+	}
+
 	return r
 }
