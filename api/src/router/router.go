@@ -42,6 +42,7 @@ func Router() *gin.Engine {
 	tags := r.Group("/tags")
 	{
 		ctrl := new(controllers.TagController)
+		tags.GET("/:id", ctrl.Show)
 		tags.POST("", ctrl.Create)
 	}
 

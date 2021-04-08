@@ -8,6 +8,19 @@ import (
 
 type Tag entities.Tag
 
+func (m Tag) GetById(id string) (Tag, error) {
+	var (
+		db  = util.GetDB()
+		tag Tag
+	)
+
+	if err := db.Preload("Todos").Preload("Todos.User").First(&tag, id).Error; err != nil {
+		return tag, err
+	}
+
+	return tag, nil
+}
+
 func (m Tag) CreateM(c *gin.Context) error {
 	var (
 		db = util.GetDB()

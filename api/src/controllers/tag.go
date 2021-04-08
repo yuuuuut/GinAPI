@@ -9,6 +9,18 @@ type TagController struct{}
 
 var tagModel = new(models.Tag)
 
+func (cr TagController) Show(c *gin.Context) {
+	id := c.Param("id")
+
+	tag, err := tagModel.GetById(id)
+	if err != nil {
+		c.JSON(404, gin.H{"error": err.Error()})
+		return
+	} else {
+		c.JSON(200, gin.H{"tag": tag})
+	}
+}
+
 func (cr TagController) Create(c *gin.Context) {
 	err := tagModel.CreateM(c)
 
