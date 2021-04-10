@@ -36,13 +36,18 @@ func CreateTodo(userId string) entities.Todo {
 	var (
 		db   = util.GetDB()
 		user entities.User
+		tags []entities.Tag
 	)
 
 	if err := db.Where("id = ?", userId).First(&user).Error; err != nil {
 		log.Fatal(err.Error())
 	}
 
-	todo := entities.Todo{Title: "TestTodo", UserID: userId, User: entities.User(user)}
+	if err := db.Where("id IN (?)", []string{"1", "2"}).Find(&tags).Error; err != nil {
+		log.Fatal(err.Error())
+	}
+
+	todo := entities.Todo{Title: "TestTodo", UserID: userId, User: entities.User(user), Tags: tags}
 	if err := db.Create(&todo).Error; err != nil {
 		panic(err.Error())
 	}
