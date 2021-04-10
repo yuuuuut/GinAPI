@@ -8,6 +8,19 @@ import (
 
 type Tag entities.Tag
 
+func (m Tag) GetAll() ([]Tag, error) {
+	var (
+		db   = util.GetDB()
+		tags []Tag
+	)
+
+	if err := db.Where("parent_id = ?", "0").Preload("Tags").Find(&tags).Error; err != nil { //db.Not("id", 0).Find(&tags).Error; err != nil {
+		return nil, err
+	}
+
+	return tags, nil
+}
+
 func (m Tag) GetById(id string) (Tag, error) {
 	var (
 		db  = util.GetDB()
