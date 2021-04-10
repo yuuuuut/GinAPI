@@ -54,7 +54,6 @@ func InitTestDB() *gorm.DB {
 	return db
 }
 
-//5zhGJih8aUYB7eNF0CLHXFIwygK2
 // InitCreateTables は与えられたDBにTableを作成します。
 func InitCreateTables(db *gorm.DB) {
 
@@ -62,6 +61,7 @@ func InitCreateTables(db *gorm.DB) {
 	db.CreateTable(&entities.Profile{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 	db.CreateTable(&entities.Todo{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 	db.CreateTable(&entities.Tag{}).AddForeignKey("parent_id", "tags(id)", "CASCADE", "CASCADE")
+	db.CreateTable(&entities.Comment{}).AddForeignKey("todo_id", "todos(id)", "CASCADE", "CASCADE").AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE").AddForeignKey("parent_id", "comments(id)", "CASCADE", "CASCADE")
 	db.Table("todos_tags").AddForeignKey("todo_id", "todos(id)", "CASCADE", "CASCADE")
 	db.Table("todos_tags").AddForeignKey("tag_id", "tags(id)", "CASCADE", "CASCADE")
 }
