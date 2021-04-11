@@ -47,5 +47,11 @@ func Router() *gin.Engine {
 		tags.POST("", ctrl.Create)
 	}
 
+	comments := r.Group("/comments")
+	{
+		ctrl := new(controllers.CommentController)
+		comments.POST("", middleware.FirebaseAuth, ctrl.Create)
+	}
+
 	return r
 }

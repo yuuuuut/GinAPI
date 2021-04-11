@@ -56,7 +56,6 @@ func InitTestDB() *gorm.DB {
 
 // InitCreateTables は与えられたDBにTableを作成します。
 func InitCreateTables(db *gorm.DB) {
-
 	db.CreateTable(&entities.User{})
 	db.CreateTable(&entities.Profile{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 	db.CreateTable(&entities.Todo{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
