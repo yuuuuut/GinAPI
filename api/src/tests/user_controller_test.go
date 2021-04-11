@@ -1,14 +1,13 @@
 package tests
 
 import (
+	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/go-playground/assert/v2"
@@ -57,10 +56,7 @@ func TestUserShow(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	reqBody, err := ioutil.ReadAll(w.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
+	reqBody, _ := ioutil.ReadAll(w.Body)
 
 	var resData UserShow
 	if err := json.Unmarshal(reqBody, &resData); err != nil {
@@ -73,23 +69,25 @@ func TestUserShow(t *testing.T) {
 }
 
 func TestUserCreate(t *testing.T) {
-	r := router.Router()
 	uid := os.Getenv("FIREBASE_ADMIN_USER_UID")
-
 	defer DeleteData(entities.User{}, uid)
 
-	reqBody := strings.NewReader(fmt.Sprintf(`{"ID": "%s","DisplayName":"TestUser","PohotURL":"TestPhoto"}`, uid))
-	req, err := http.NewRequest("POST", "/users", reqBody)
+	user := new(User)
+	user.ID = uid
+	user.DisplayName = "TestUser"
+	user.PohotURL = "TestPhoto"
+	user_json, _ := json.Marshal(user)
+	body := bytes.NewBuffer(user_json)
+
+	r := router.Router()
+	req, err := http.NewRequest("POST", "/users", body)
 	if err != nil {
 		log.Println(err.Error())
 	}
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	b, err := ioutil.ReadAll(w.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
+	b, _ := ioutil.ReadAll(w.Body)
 
 	var resData UserCreate
 	if err := json.Unmarshal(b, &resData); err != nil {

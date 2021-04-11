@@ -1,15 +1,14 @@
 package tests
 
 import (
+	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
 
-	"strings"
 	"testing"
 
 	"github.com/go-playground/assert/v2"
@@ -48,10 +47,7 @@ func TestTodoIndex(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	reqBody, err := ioutil.ReadAll(w.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
+	reqBody, _ := ioutil.ReadAll(w.Body)
 
 	var resData IndexTodo
 	if err := json.Unmarshal(reqBody, &resData); err != nil {
@@ -78,10 +74,7 @@ func TestTodoShow(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	reqBody, err := ioutil.ReadAll(w.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
+	reqBody, _ := ioutil.ReadAll(w.Body)
 
 	var resData OneTodo
 	if err := json.Unmarshal(reqBody, &resData); err != nil {
@@ -98,10 +91,12 @@ func TestTodoPost(t *testing.T) {
 	user := CreateUser()
 	defer DeleteData(user, user.ID)
 
-	title := "Test"
+	todo := new(Todo)
+	todo.Title = "Test"
+	todo_json, _ := json.Marshal(todo)
+	body := bytes.NewBuffer(todo_json)
 
 	r := router.Router()
-	body := strings.NewReader(fmt.Sprintf(`{"title": "%s"}`, title))
 	req, err := http.NewRequest("POST", "/todos", body)
 	if err != nil {
 		log.Println(err.Error())
@@ -110,10 +105,7 @@ func TestTodoPost(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	b, err := ioutil.ReadAll(w.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
+	b, _ := ioutil.ReadAll(w.Body)
 
 	var resData OneTodo
 	if err := json.Unmarshal(b, &resData); err != nil {
@@ -121,7 +113,7 @@ func TestTodoPost(t *testing.T) {
 	}
 
 	assert.Equal(t, 201, w.Code)
-	assert.Equal(t, resData.Todo.Title, title)
+	assert.Equal(t, resData.Todo.Title, "Test")
 	assert.Equal(t, resData.Todo.User, user)
 }
 
@@ -139,10 +131,7 @@ func TestTodoUpdate(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	b, err := ioutil.ReadAll(w.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
+	b, _ := ioutil.ReadAll(w.Body)
 
 	var resData OneTodo
 	if err := json.Unmarshal(b, &resData); err != nil {
