@@ -17,17 +17,7 @@ import (
 )
 
 type Comment entities.Comment
-
-type CreateComment struct {
-	Comment struct {
-		ID       int
-		Content  string
-		ParentID *int
-		UserID   string
-		TodoID   int
-		User     User
-	}
-}
+type CommentCreateRes entities.CommentCreateRes
 
 func TestCommentPost(t *testing.T) {
 	user := CreateUser()
@@ -53,12 +43,10 @@ func TestCommentPost(t *testing.T) {
 
 	b, _ := ioutil.ReadAll(w.Body)
 
-	var resData CreateComment
-	if err := json.Unmarshal(b, &resData); err != nil {
+	var res CommentCreateRes
+	if err := json.Unmarshal(b, &res); err != nil {
 		fmt.Println(err.Error())
 	}
-
-	fmt.Println(resData.Comment)
 
 	assert.Equal(t, 201, w.Code)
 }

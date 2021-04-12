@@ -5,5 +5,5 @@ type User struct {
 	DisplayName string  `gorm:"not null"`
 	PohotURL    string  `gorm:"not null"`
 	Todos       []Todo  `gorm:"ForeignKey:UserID"`
-	Profile     Profile `gorm:"foreignKey:UserID"`
+	Profile     Profile `gorm:"ForeignKey:UserID"`
 }
