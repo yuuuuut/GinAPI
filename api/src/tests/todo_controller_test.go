@@ -3,6 +3,7 @@ package tests
 import (
 	"bytes"
 	"encoding/json"
+
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -18,9 +19,10 @@ import (
 )
 
 type Todo entities.Todo
+type TodoIndexRes entities.TodoIndexRes
 
-type IndexTodo struct {
-	Todos []Todo
+type TestTodoIndexRes struct {
+	Todos []TodoIndexRes
 }
 
 type OneTodo struct {
@@ -47,17 +49,20 @@ func TestTodoIndex(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	reqBody, _ := ioutil.ReadAll(w.Body)
+	b, _ := ioutil.ReadAll(w.Body)
 
-	var resData IndexTodo
-	if err := json.Unmarshal(reqBody, &resData); err != nil {
-		log.Fatal(err)
+	var resData TestTodoIndexRes
+	if err := json.Unmarshal(b, &resData); err != nil {
+		log.Println(err.Error())
 	}
 
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, resData.Todos[0].ID, todo.ID)
+	assert.Equal(t, resData.Todos[0].Title, todo.Title)
+	assert.Equal(t, resData.Todos[0].Status, todo.Status)
 	assert.Equal(t, resData.Todos[0].UserID, todo.UserID)
-	assert.Equal(t, resData.Todos[0].User, user)
+	assert.Equal(t, resData.Todos[0].User.ID, user.ID)
+	assert.Equal(t, resData.Todos[0].User.DisplayName, user.DisplayName)
 }
 
 func TestTodoShow(t *testing.T) {
@@ -83,7 +88,7 @@ func TestTodoShow(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, resData.Todo.ID, todo.ID)
-	assert.Equal(t, resData.Todo.UserID, user.ID)
+	//assert.Equal(t, resData.Todo.UserID, user.ID)
 	assert.Equal(t, resData.Todo.User, user)
 }
 

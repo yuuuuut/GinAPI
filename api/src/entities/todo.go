@@ -1,13 +1,24 @@
 package entities
 
 type Todo struct {
-	ID       int
-	Title    string    `gorm:"not null" binding:"required"`
-	Status   bool      `gorm:"default:false"`
-	UserID   string    `gorm:"not null;REFERENCES users(id)"`
-	User     User      `gorm:"PRELOAD:false"`
-	Tags     []Tag     `gorm:"many2many:todos_tags"`
-	Comments []Comment `gorm:"ForeignKey:TodoID"`
+	ID       int       `json:"id"`
+	Title    string    `gorm:"not null" binding:"required" json:"title"`
+	Status   bool      `gorm:"default:false" json:"status"`
+	UserID   string    `gorm:"not null;REFERENCES users(id)" json:"user_id"`
+	User     User      `gorm:"PRELOAD:false" json:"user"`
+	Tags     []Tag     `gorm:"many2many:todos_tags" json:"tags"`
+	Comments []Comment `gorm:"ForeignKey:TodoID" json:"comments"`
+}
+
+type TodoIndexRes struct {
+	ID     int    `json:"id"`
+	Title  string `json:"title"`
+	Status bool   `json:"status"`
+	UserID string `json:"user_id"`
+	User   struct {
+		ID          string `json:"id"`
+		DisplayName string `json:"display_name"`
+	} `json:"user"`
 }
 
 type CreateTodoReq struct {

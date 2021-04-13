@@ -1,24 +1,39 @@
 package models
 
 import (
+	"encoding/json"
+
 	"github.com/gin-gonic/gin"
 	"github.com/yuuuuut/gin-api/src/entities"
 	"github.com/yuuuuut/gin-api/src/util"
 )
 
 type Todo entities.Todo
-
+type TodoIndexRes entities.TodoIndexRes
 type CreateTodoReq entities.CreateTodoReq
 
-func (m Todo) GetAll(offset, limit string) ([]Todo, error) {
-	var db = util.GetDB()
-	var todos []Todo
+func (m Todo) GetAll(offset, limit string) ([]TodoIndexRes, error) {
+	var (
+		db    = util.GetDB()
+		todos []Todo
+	)
 
 	if err := db.Offset(offset).Limit(limit).Preload("User").Find(&todos).Error; err != nil {
-		return nil, err
+		return []TodoIndexRes{}, err
 	}
 
-	return todos, nil
+	var res []TodoIndexRes
+
+	data, err := json.Marshal(todos)
+	if err != nil {
+		return []TodoIndexRes{}, err
+	}
+
+	if err := json.Unmarshal([]byte(data), &res); err != nil {
+		return []TodoIndexRes{}, err
+	}
+
+	return res, nil
 }
 
 func (m Todo) GetById(id string) (Todo, error) {
