@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"bytes"
 	"encoding/json"
 
 	"io/ioutil"
@@ -20,6 +21,8 @@ import (
 type Todo entities.Todo
 type TodoIndexRes entities.TodoIndexRes
 type TodoShowRes entities.TodoShowRes
+type TodoCreateRes entities.TodoCreateRes
+type TodoUpdateRes entities.TodoUpdateRes
 
 type TestTodoIndexRes struct {
 	Todos []TodoIndexRes
@@ -27,6 +30,14 @@ type TestTodoIndexRes struct {
 
 type TestTodoShowRes struct {
 	Todo TodoShowRes
+}
+
+type TestTodoCreateRes struct {
+	Todo TodoCreateRes
+}
+
+type TestTodoUpdateRes struct {
+	Todo TodoUpdateRes
 }
 
 func TestTodoIndex(t *testing.T) {
@@ -86,7 +97,6 @@ func TestTodoShow(t *testing.T) {
 	assert.Equal(t, res.Todo.User.ID, user.ID)
 }
 
-/*
 func TestTodoPost(t *testing.T) {
 	user := CreateUser()
 	defer DeleteData(user, user.ID)
@@ -101,20 +111,20 @@ func TestTodoPost(t *testing.T) {
 	if err != nil {
 		log.Println(err.Error())
 	}
-
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
 	b, _ := ioutil.ReadAll(w.Body)
 
-	var resData OneTodo
-	if err := json.Unmarshal(b, &resData); err != nil {
+	var res TestTodoCreateRes
+	if err := json.Unmarshal(b, &res); err != nil {
 		log.Fatal(err)
 	}
 
 	assert.Equal(t, 201, w.Code)
-	assert.Equal(t, resData.Todo.Title, "Test")
-	assert.Equal(t, resData.Todo.User, user)
+	assert.Equal(t, res.Todo.Title, "Test")
+	assert.Equal(t, res.Todo.UserID, user.ID)
+	assert.Equal(t, res.Todo.User.ID, user.ID)
 }
 
 func TestTodoUpdate(t *testing.T) {
@@ -133,15 +143,14 @@ func TestTodoUpdate(t *testing.T) {
 
 	b, _ := ioutil.ReadAll(w.Body)
 
-	var resData TodoShowRes
-	if err := json.Unmarshal(b, &resData); err != nil {
+	var res TestTodoUpdateRes
+	if err := json.Unmarshal(b, &res); err != nil {
 		log.Fatal(err)
 	}
 
 	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, resData.Todo.Status, true)
+	assert.Equal(t, res.Todo.Status, true)
 }
-*/
 
 func TestTodoDelete(t *testing.T) {
 	user := CreateUser()

@@ -11,6 +11,10 @@ import (
 type Todo entities.Todo
 type TodoIndexRes entities.TodoIndexRes
 type TodoShowRes entities.TodoShowRes
+type TodoCreateRes entities.TodoCreateRes
+type TodoUpdateRes entities.TodoUpdateRes
+type TodoDeleteRes entities.TodoDeleteRes
+
 type CreateTodoReq entities.CreateTodoReq
 
 func (m Todo) GetAll(offset, limit string) ([]TodoIndexRes, error) {
@@ -61,61 +65,97 @@ func (m Todo) GetById(id string) (TodoShowRes, error) {
 	return res, nil
 }
 
-func (m Todo) CreateM(c *gin.Context) (Todo, map[string]string, error) {
+func (m Todo) CreateM(c *gin.Context) (TodoCreateRes, map[string]string, error) {
 	var (
-		db   = util.GetDB()
-		user User
-		req  CreateTodoReq
-		tags []entities.Tag
+		db     = util.GetDB()
+		userId = c.GetString("currentUserId")
+		user   User
+		req    CreateTodoReq
+		tags   []entities.Tag
 	)
-
-	userId := c.GetString("currentUserId")
 
 	if err := c.BindJSON(&req); err != nil {
 		errorMessages := util.TodoValidation(err)
-		return Todo{}, errorMessages, err
+		return TodoCreateRes{}, errorMessages, err
 	}
 
 	if err := db.Where("id = ?", userId).First(&user).Error; err != nil {
-		return Todo{}, nil, err
+		return TodoCreateRes{}, nil, err
 	}
 
 	if err := db.Where("id IN (?)", req.Tags).Find(&tags).Error; err != nil {
-		return Todo{}, nil, err
+		return TodoCreateRes{}, nil, err
 	}
 
 	todo := Todo{Title: req.Title, UserID: userId, User: entities.User(user), Tags: tags}
 	if err := db.Create(&todo).Error; err != nil {
-		return todo, nil, err
+		return TodoCreateRes{}, nil, err
 	}
 
-	return todo, nil, nil
+	var res TodoCreateRes
+
+	data, err := json.Marshal(todo)
+	if err != nil {
+		return TodoCreateRes{}, nil, err
+	}
+
+	if err := json.Unmarshal(data, &res); err != nil {
+		return TodoCreateRes{}, nil, err
+	}
+
+	return res, nil, nil
 }
 
-func (m Todo) UpdateById(id string, c *gin.Context) (Todo, error) {
-	var db = util.GetDB()
-	var todo Todo
+func (m Todo) UpdateById(id string, c *gin.Context) (TodoUpdateRes, error) {
+	var (
+		db   = util.GetDB()
+		todo Todo
+	)
 
 	if err := db.Where("id = ?", id).First(&todo).Error; err != nil {
-		return todo, err
+		return TodoUpdateRes{}, err
 	}
 
 	todo.Status = true
 
 	if err := db.Save(&todo).Error; err != nil {
-		return todo, err
+		return TodoUpdateRes{}, err
 	}
 
-	return todo, nil
+	var res TodoUpdateRes
+
+	data, err := json.Marshal(todo)
+	if err != nil {
+		return TodoUpdateRes{}, err
+	}
+
+	if err := json.Unmarshal(data, &res); err != nil {
+		return TodoUpdateRes{}, err
+	}
+
+	return res, nil
 }
 
-func (m Todo) DeleteById(id string) (Todo, error) {
-	var db = util.GetDB()
-	var todo Todo
+func (m Todo) DeleteById(id string) (TodoDeleteRes, error) {
+	var (
+		db   = util.GetDB()
+		todo Todo
+	)
 
 	if err := db.Where("id = ?", id).Delete(&todo).Error; err != nil {
-		return todo, err
+		return TodoDeleteRes{}, err
 	}
 
-	return todo, nil
+	var res TodoDeleteRes
+
+	data, err := json.Marshal(todo)
+	if err != nil {
+		return TodoDeleteRes{}, err
+	}
+
+	if err := json.Unmarshal(data, &res); err != nil {
+		return TodoDeleteRes{}, err
+	}
+
+	return res, nil
 }

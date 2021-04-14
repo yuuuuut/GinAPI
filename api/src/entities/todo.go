@@ -10,6 +10,11 @@ type Todo struct {
 	Comments []Comment `gorm:"ForeignKey:TodoID" json:"comments"`
 }
 
+type CreateTodoReq struct {
+	Title string
+	Tags  []string
+}
+
 type TodoIndexRes struct {
 	ID     int    `json:"id"`
 	Title  string `json:"title"`
@@ -37,7 +42,27 @@ type TodoShowRes struct {
 	} `json:"tags"`
 }
 
-type CreateTodoReq struct {
-	Title string
-	Tags  []string
+type TodoCreateRes struct {
+	ID     int    `json:"id"`
+	Title  string `json:"title"`
+	Status bool   `json:"status"`
+	UserID string `json:"user_id"`
+	User   struct {
+		ID          string `json:"id"`
+		DisplayName string `json:"display_name"`
+	} `json:"user"`
+}
+
+type TodoUpdateRes struct {
+	ID     int    `json:"id"`
+	Title  string `json:"title"`
+	Status bool   `json:"status"`
+	UserID string `json:"user_id"`
+}
+
+type TodoDeleteRes struct {
+	ID     int    `json:"id"`
+	Title  string `json:"title"`
+	Status bool   `json:"status"`
+	UserID string `json:"user_id"`
 }
