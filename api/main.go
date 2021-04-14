@@ -8,7 +8,7 @@ import (
 func main() {
 	util.InitENV()
 	util.InitDB()
-	//db := util.InitTestDB()
+	//util.InitTestDB()
 
 	//util.InitCreateTables(db)
 	util.InitFirebase()

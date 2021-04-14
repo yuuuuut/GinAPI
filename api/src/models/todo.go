@@ -10,6 +10,7 @@ import (
 
 type Todo entities.Todo
 type TodoIndexRes entities.TodoIndexRes
+type TodoShowRes entities.TodoShowRes
 type CreateTodoReq entities.CreateTodoReq
 
 func (m Todo) GetAll(offset, limit string) ([]TodoIndexRes, error) {
@@ -29,22 +30,35 @@ func (m Todo) GetAll(offset, limit string) ([]TodoIndexRes, error) {
 		return []TodoIndexRes{}, err
 	}
 
-	if err := json.Unmarshal([]byte(data), &res); err != nil {
+	if err := json.Unmarshal(data, &res); err != nil {
 		return []TodoIndexRes{}, err
 	}
 
 	return res, nil
 }
 
-func (m Todo) GetById(id string) (Todo, error) {
-	var db = util.GetDB()
-	var todo Todo
+func (m Todo) GetById(id string) (TodoShowRes, error) {
+	var (
+		db   = util.GetDB()
+		todo Todo
+	)
 
-	if err := db.First(&todo, id).Related(&todo.User).Error; err != nil {
-		return todo, err
+	if err := db.First(&todo, id).Related(&todo.User).Related(&todo.Tags, "Tags").Error; err != nil {
+		return TodoShowRes{}, err
 	}
 
-	return todo, nil
+	var res TodoShowRes
+
+	data, err := json.Marshal(todo)
+	if err != nil {
+		return TodoShowRes{}, err
+	}
+
+	if err := json.Unmarshal(data, &res); err != nil {
+		return TodoShowRes{}, err
+	}
+
+	return res, nil
 }
 
 func (m Todo) CreateM(c *gin.Context) (Todo, map[string]string, error) {

@@ -21,6 +21,22 @@ type TodoIndexRes struct {
 	} `json:"user"`
 }
 
+type TodoShowRes struct {
+	ID     int    `json:"id"`
+	Title  string `json:"title"`
+	Status bool   `json:"status"`
+	UserID string `json:"user_id"`
+	User   struct {
+		ID          string `json:"id"`
+		DisplayName string `json:"display_name"`
+	} `json:"user"`
+	Tags []struct {
+		ID       int    `json:"id"`
+		Name     string `json:"name"`
+		ParentID int    `json:"parent_id"`
+	} `json:"tags"`
+}
+
 type CreateTodoReq struct {
 	Title string
 	Tags  []string
