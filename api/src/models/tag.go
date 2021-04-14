@@ -39,22 +39,22 @@ func (m Tag) CreateM(c *gin.Context) error {
 		db = util.GetDB()
 	)
 
-	tag1 := Tag{Name: "アウトドア"}
+	tag1 := Tag{Name: "アウトドア", ParentID: nil}
 	if err := db.Create(&tag1).Error; err != nil {
 		return err
 	}
 
-	tag2 := Tag{Name: "キャンプ", ParentID: tag1.ID}
+	tag2 := Tag{Name: "キャンプ", ParentID: &tag1.ID}
 	if err := db.Create(&tag2).Error; err != nil {
 		return err
 	}
 
-	tag3 := Tag{Name: "インドア"}
+	tag3 := Tag{Name: "インドア", ParentID: nil}
 	if err := db.Create(&tag3).Error; err != nil {
 		return err
 	}
 
-	tag4 := Tag{Name: "ゲーム", ParentID: tag3.ID}
+	tag4 := Tag{Name: "ゲーム", ParentID: &tag3.ID}
 	if err := db.Create(&tag4).Error; err != nil {
 		return err
 	}
