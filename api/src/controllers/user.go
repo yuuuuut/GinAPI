@@ -12,9 +12,23 @@ var (
 )
 
 func (cr UserController) Show(c *gin.Context) {
+	var (
+		offset, limit         string
+		offsetBool, limitBool bool
+	)
+
 	id := c.Param("id")
 
-	user, err := userModel.GetById(id)
+	offset, offsetBool = c.GetQuery("offset")
+	if !offsetBool {
+		offset = "0"
+	}
+	limit, limitBool = c.GetQuery("limit")
+	if !limitBool {
+		limit = "3"
+	}
+
+	user, err := userModel.GetById(id, offset, limit)
 	if err != nil {
 		c.JSON(404, gin.H{"error": err.Error()})
 		return

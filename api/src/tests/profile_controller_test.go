@@ -16,14 +16,8 @@ import (
 
 type Profile entities.Profile
 
-type ShowProfile struct {
-	Profile struct {
-		ID       int
-		Nickname string
-		Sex      string
-		Age      int
-		UserID   string
-	}
+type TestShowProfileRes struct {
+	Profile Profile
 }
 
 func TestProfileShow(t *testing.T) {
@@ -45,7 +39,7 @@ func TestProfileShow(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	var resData ShowProfile
+	var resData TestShowProfileRes
 	if err := json.Unmarshal(reqBody, &resData); err != nil {
 		log.Fatal(err)
 	}

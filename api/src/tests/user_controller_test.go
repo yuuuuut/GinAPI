@@ -16,30 +16,16 @@ import (
 )
 
 type User entities.User
+type UserShowRes entities.UserShowRes
+type UserCreateRes entities.UserCreateRes
 
-type UserShow struct {
-	User struct {
-		ID          string
-		DisplayName string
-		PohotURL    string
-		Todos       []Todo
-	}
+type TestUserShowRes struct {
+	User UserShowRes
 }
 
-type UserCreate struct {
-	User struct {
-		ID          string
-		DisplayName string
-		PohotURL    string
-		Todos       []Todo
-	}
-	Profile struct {
-		ID       int
-		Nickname string
-		Sex      string
-		Age      int
-		UserID   string
-	}
+type TestUserCreateRes struct {
+	User    UserCreateRes
+	Profile Profile
 }
 
 func TestUserShow(t *testing.T) {
@@ -58,14 +44,15 @@ func TestUserShow(t *testing.T) {
 
 	reqBody, _ := ioutil.ReadAll(w.Body)
 
-	var resData UserShow
-	if err := json.Unmarshal(reqBody, &resData); err != nil {
+	var res TestUserShowRes
+	if err := json.Unmarshal(reqBody, &res); err != nil {
 		log.Fatal(err)
 	}
 
 	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, resData.User.Todos[0].ID, todo.ID)
-	assert.Equal(t, resData.User.Todos[0].User, user)
+	assert.Equal(t, res.User.ID, user.ID)
+	assert.Equal(t, res.User.Todos[0].ID, todo.ID)
+	assert.Equal(t, res.User.Todos[0].User.ID, user.ID)
 }
 
 func TestUserCreate(t *testing.T) {
@@ -87,14 +74,14 @@ func TestUserCreate(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	b, _ := ioutil.ReadAll(w.Body)
+	reqBody, _ := ioutil.ReadAll(w.Body)
 
-	var resData UserCreate
-	if err := json.Unmarshal(b, &resData); err != nil {
+	var res TestUserCreateRes
+	if err := json.Unmarshal(reqBody, &res); err != nil {
 		log.Fatal(err)
 	}
 
 	assert.Equal(t, 201, w.Code)
-	assert.Equal(t, resData.User.ID, uid)
-	assert.Equal(t, resData.Profile.UserID, uid)
+	assert.Equal(t, res.User.ID, uid)
+	assert.Equal(t, res.Profile.UserID, uid)
 }
