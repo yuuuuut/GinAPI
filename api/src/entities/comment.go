@@ -11,7 +11,7 @@ type Comment struct {
 	Comments []Comment `gorm:"ForeignKey:ParentID"`
 }
 
-type CreateCommentReq struct {
+type CommentCreateReq struct {
 	Content  string
 	ParentID int
 	TodoID   int

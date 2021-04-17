@@ -1,24 +1,37 @@
 package models
 
 import (
+	"encoding/json"
+
 	"github.com/gin-gonic/gin"
 	"github.com/yuuuuut/gin-api/src/entities"
 	"github.com/yuuuuut/gin-api/src/util"
 )
 
 type Tag entities.Tag
+type TagIndexRes entities.TagIndexRes
 
-func (m Tag) GetAll() ([]Tag, error) {
+func (m Tag) GetAll() ([]TagIndexRes, error) {
 	var (
 		db   = util.GetDB()
 		tags []Tag
 	)
 
 	if err := db.Where("parent_id = ?", "0").Preload("Tags").Find(&tags).Error; err != nil { //db.Not("id", 0).Find(&tags).Error; err != nil {
-		return nil, err
+		return []TagIndexRes{}, err
 	}
 
-	return tags, nil
+	var res []TagIndexRes
+	q, err := json.Marshal(tags)
+	if err != nil {
+		return []TagIndexRes{}, err
+	}
+
+	if err := json.Unmarshal(q, &res); err != nil {
+		return []TagIndexRes{}, err
+	}
+
+	return res, nil
 }
 
 func (m Tag) GetById(id string) (Tag, error) {

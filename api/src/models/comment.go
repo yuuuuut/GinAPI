@@ -9,14 +9,14 @@ import (
 )
 
 type Comment entities.Comment
-type CreateCommentReq entities.CreateCommentReq
+type CommentCreateReq entities.CommentCreateReq
 type CommentCreateRes entities.CommentCreateRes
 
 func (m Comment) CreateM(c *gin.Context) (CommentCreateRes, error) {
 	var (
 		db      = util.GetDB()
 		userId  = c.GetString("currentUserId")
-		req     CreateCommentReq
+		req     CommentCreateReq
 		user    User
 		todo    Todo
 		comment Comment
@@ -47,13 +47,12 @@ func (m Comment) CreateM(c *gin.Context) (CommentCreateRes, error) {
 	}
 
 	var res CommentCreateRes
-
 	q, err := json.Marshal(comment)
 	if err != nil {
 		return CommentCreateRes{}, err
 	}
 
-	if err := json.Unmarshal([]byte(q), &res); err != nil {
+	if err := json.Unmarshal(q, &res); err != nil {
 		return CommentCreateRes{}, err
 	}
 
