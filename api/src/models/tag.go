@@ -10,6 +10,7 @@ import (
 
 type Tag entities.Tag
 type TagIndexRes entities.TagIndexRes
+type TagShowRes entities.TagShowRes
 
 func (m Tag) GetAll() ([]TagIndexRes, error) {
 	var (
@@ -34,17 +35,27 @@ func (m Tag) GetAll() ([]TagIndexRes, error) {
 	return res, nil
 }
 
-func (m Tag) GetById(id string) (Tag, error) {
+func (m Tag) GetById(id string) (TagShowRes, error) {
 	var (
 		db  = util.GetDB()
 		tag Tag
 	)
 
 	if err := db.Preload("Todos").Preload("Todos.User").First(&tag, id).Error; err != nil {
-		return tag, err
+		return TagShowRes{}, err
 	}
 
-	return tag, nil
+	var res TagShowRes
+	q, err := json.Marshal(tag)
+	if err != nil {
+		return TagShowRes{}, err
+	}
+
+	if err := json.Unmarshal(q, &res); err != nil {
+		return TagShowRes{}, err
+	}
+
+	return res, nil
 }
 
 func (m Tag) CreateM(c *gin.Context) error {
